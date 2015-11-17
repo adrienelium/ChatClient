@@ -12,6 +12,7 @@ public class GestionEvent implements ActionListener{
 	
 	private Windows fen;
 	private SocketManager socket = null;
+	private Thread th;
 	
 	public GestionEvent(Windows fen) {
 		// TODO Auto-generated constructor stub
@@ -31,7 +32,8 @@ public class GestionEvent implements ActionListener{
 				
 					this.socket.launchManager(fen.getPseudo().getText(),fen.getAdresse().getText());
 					
-					new Thread(this.socket).start();
+					th = new Thread(this.socket);
+					th.start();
 
 				
 			}
@@ -42,6 +44,7 @@ public class GestionEvent implements ActionListener{
 		}
 		else if (str == "Deconnexion") {
 			JOptionPane.showMessageDialog(this.fen.getFrame(), "Vous avez été déconnecté !", "Succès", JOptionPane.INFORMATION_MESSAGE);
+			th.interrupt();
 			this.socket.closeAll(); 
 		} 
 		else if (str == "Envoyer") {

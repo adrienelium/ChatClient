@@ -62,10 +62,11 @@ public class SocketManager implements Runnable,Observable{
 	@Override
 	public void run() {
 		// TODO Ecoute tout les message provenant du socket
-		while (true) {
+		while (!Thread.interrupted()) {
 			if (in != null) {
 				String message_distant;
 				try {
+					
 					message_distant = in.readLine();
 					Dataset data = new Dataset();
 			        data.setMessage(message_distant);	 
@@ -75,7 +76,10 @@ public class SocketManager implements Runnable,Observable{
 			        notifyAllObservateur(data);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+				
+						System.out.println("Vous avez été déconnecté");
+				
+					
 				}
 			}
 			
@@ -111,7 +115,9 @@ public class SocketManager implements Runnable,Observable{
 	}
 
 	public void closeAll() {
+		setReady(false);
 		try {
+			
 			socket.close();
 			setReady(false);
 		} catch (IOException e) {
