@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import controleur.Crypto;
 import vue.Observateur;
 
 public class SocketManager implements Runnable,Observable{
@@ -39,16 +40,16 @@ public class SocketManager implements Runnable,Observable{
 			this.socket = new Socket(InetAddress.getByName(adresseip), 5000); // Connexion au server
 			System.out.println("Demande de connexion");
 			out = new PrintWriter(socket.getOutputStream());
-			out.println(pseudo);
+			out.println(Crypto.encodeChaine(pseudo));
 			out.flush(); // Envoie du pseudo au server
 			
 			in = new BufferedReader (new InputStreamReader (socket.getInputStream())); // Recuperation du message de bienvenue
 	        String message_distant = in.readLine();
 	        
 	        Dataset data = new Dataset();
-	        data.setMessage(message_distant);	 
+	        data.setMessage(Crypto.decodeChaine(message_distant));	 
 	        notifyAllObservateur(data);
-	        System.out.println(message_distant);
+	        //System.out.println(message_distant);
 	        setReady(true);
 	        
 		} catch (IOException e) {
@@ -69,9 +70,10 @@ public class SocketManager implements Runnable,Observable{
 					
 					message_distant = in.readLine();
 					Dataset data = new Dataset();
-			        data.setMessage(message_distant);	 
+			        data.setMessage(Crypto.decodeChaine(message_distant));	 
 			        
-			        System.err.println(message_distant);
+			        System.out.println(message_distant);
+			        System.err.println(Crypto.decodeChaine(message_distant));
 			        
 			        notifyAllObservateur(data);
 				} catch (IOException e) {
@@ -88,7 +90,7 @@ public class SocketManager implements Runnable,Observable{
 	
 	public void sendMessage(String message) {
 		// Envoie un message
-		out.println(message);
+		out.println(Crypto.encodeChaine(message));
 		out.flush();
 	}
 
