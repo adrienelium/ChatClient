@@ -55,7 +55,7 @@ public class SocketManager implements Runnable,Observable{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("PROBLEM ICI");
-			e.printStackTrace();
+			//e.printStackTrace();
 			
 		}
 	}
